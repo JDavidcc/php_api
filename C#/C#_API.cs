@@ -14,7 +14,7 @@ class Program
         Console.Write("Ingrese el segundo número: ");
         double numero2 = double.Parse(Console.ReadLine());
 
-        var apiUrl = "http://tudominio.com/api.php"; // Reemplaza con la URL de tu API
+        var apiUrl = "http://localhost/php_api/api2.php";
 
         using (var client = new HttpClient())
         {
