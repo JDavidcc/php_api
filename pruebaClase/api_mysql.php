@@ -1,34 +1,45 @@
 <?php
-    // Para usar el api desde php 
-    // http://localhost/Php_API/API.Php?x=83287
     // Esta aplicación PHP es un API REST por lo que no tiene interfaz de usuario
-        header("Content-Type: application/json; charset=UTF-8");
+    // Se puede probar con Postman o con el archivo index.html
+    header("Content-Type: application/json; charset=UTF-8");
 
-    if (!empty($_GET["x"])) {
-        $x = $_GET["x"];
-        if (empty($x))
+    if (!empty($_GET["cp"])) {
+        $cp = $_GET["cp"];
+        if (empty($cp))
         {
             response(100, NULL);
         }
         else{
-            //En lugar de hacer la operación, se llama a la base de datos.
-            //response(200, $x + $y);
             $servername = "localhost";
             $username = "root";
             $password = "";
             $dbname = "codigo_postales";
-            $conn = new mysqli($servername, $username, $password, $dbname);
-            if($conn->connect_error){
-                response (500, NULL);
+            
+            $connection = new mysqli($servername, $username, $password, $dbname);
+            if ($connection->connect_error) {
+                response(500, NULL);
             }
-            $sql="SELECT colonia * FROM codigo_postales WHERE cp= $x";
-            response (200, $sql);
+            
+            $query = "SELECT colonia FROM codigos_postales WHERE cp = $cp";
+            $result = $connection->query($query);
+            
+            if ($result->num_rows > 0) {
+                $rows = array();
+                while($row = mysqli_fetch_assoc($result)) {
+                    $rows[] = $row;
+                }
+                response(200, $rows);
+            } else {
+                response(300, NULL);
+            }
+
+            $connection->close();
         }
-    } else
-     {
+    } else {
         response(300, NULL);
     }
 
+    
     function response($status, $data) {
         header("HTTP/1.1 " . $status);
         $response = array(
